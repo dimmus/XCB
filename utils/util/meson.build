@@ -1,28 +1,48 @@
 inc_xcb += include_directories('.')
 
-f_check += []
-h_check += []
-
-dep_int_cursor = [xcb]
+f_check += ['vasprintf']
 
 src = files(
+  'atoms.c',
+  'event.c',
+  'xcb_aux.c',
 )
 
-lib = library('xcb-cursor', src,
+lib = library('xcb-util', src,
   include_directories: inc_xcb,
-  dependencies: dep_int_cursor,
-  version: '0.0.0',
+  version: '1.0.0',
   install: true,
 )
 
-cursor = declare_dependency(
+util = declare_dependency(
   link_with: lib,
   include_directories: inc_xcb,
 )
 
-pkg.generate(lib,
-  name: '',
-  description: '',
-  version: '',
+pkg.generate(
+  name: 'XCB Atom library',
+  description: 'XCB atom cache',
+  version: '0.4.1',
+  requires: 'xcb',
+)
+
+pkg.generate(
+  name: 'XCB Aux library',
+  description: 'XCB convenient functions',
+  version: '0.4.1',
+  requires: 'xcb',
+)
+
+pkg.generate(
+  name: 'XCB Event library',
+  description: 'XCB event callback interface',
+  version: '0.4.1',
+  requires: 'xcb',
+)
+
+pkg.generate(
+  name: 'XCB Util Core library',
+  description: 'XCB util core interface',
+  version: '0.4.1',
   requires: 'xcb',
 )

@@ -14,7 +14,7 @@ src = files(
   'parse_cursor_file.c',
 )
 
-lib = library('xcb-cursor', src,
+lib = library('xcb-util-cursor', src,
   include_directories: inc_xcb,
   dependencies: dep_int_cursor,
   version: '0.0.0',

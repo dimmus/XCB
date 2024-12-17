@@ -1,28 +1,62 @@
 inc_xcb += include_directories('.')
 
-f_check += []
-h_check += []
-
 dep_int_wm = [xcb]
 
-src = files(
-)
-
-lib = library('xcb-wm', src,
+lib_iccm = library('xcb-iccm', 
+  'icccm.c',
   include_directories: inc_xcb,
   dependencies: dep_int_wm,
-  version: '0.0.0',
+  version: '4.0.0',
   install: true,
 )
 
-wm = declare_dependency(
-  link_with: lib,
+iccm = declare_dependency(
+  link_with: lib_iccm,
   include_directories: inc_xcb,
 )
 
-pkg.generate(lib,
-  name: '',
-  description: '',
-  version: '',
+exe_m4 = find_program('m4', required: true)
+
+ewmh_c = custom_target('gen_ewmh_c',
+  input: 'ewmh.c.m4',
+  output: 'ewmh.c',
+  build_by_default: true,
+  capture: true,
+  command: [exe_m4, '@INPUT0@'],
+)
+
+ewmh_h = custom_target('gen_ewmh_h',
+  input: 'ewmh.h.m4',
+  output: 'ewmh.h',
+  build_by_default: true,
+  capture: true,
+  command: [exe_m4, '@INPUT0@'],
+  install_dir: dir_include / 'xcb',
+)
+
+lib_ewmh = library('xcb-ewmh', 
+  'ewmh.c',
+  include_directories: inc_xcb,
+  dependencies: [dep_int_wm, ewmh_c, ewmh_h],
+  version: '2.0.0',
+  install: true,
+)
+
+ewmh = declare_dependency(
+  link_with: lib_ewmh,
+  include_directories: inc_xcb,
+)
+
+pkg.generate(lib_iccm,
+  name: 'XCB ICCCM library',
+  description: 'XCB ICCCM binding',
+  version: '0.4.2',
+  requires: 'xcb',
+)
+
+pkg.generate(lib_ewmh,
+  name: 'XCB EWMH library',
+  description: 'XCB EWMH binding',
+  version: '0.4.2',
   requires: 'xcb',
 )

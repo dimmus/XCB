@@ -6,10 +6,6 @@ project('X C Binding', 'c',
 
 cc = meson.get_compiler('c')
 
-# add_project_arguments(
-#   language: 'c'
-# )
-
 add_project_link_arguments(
   '-no-undefined',
   language: 'c'
@@ -25,26 +21,15 @@ dir_man     = dir_prefix / get_option('mandir')
 dir_build   = meson.project_build_root()
 dir_source  = meson.project_source_root()
 
-dep_m            = cc.find_library('m',  required: false) # libxcvt
-dep_dl           = cc.find_library('dl', required: false) # xvmc, xserver
-# dep_zlib         = dependency('zlib') # xfont
-# dep_bzip2        = dependency('bzip2') # xfont
-# dep_freetype2    = dependency('freetype2') # xfont
-# dep_zlib         = dependency('zlib') # fontenc
-# dep_xcb          = dependency('xcb', version: '>= 1.11.1') # x11
-# dep_uuid         = dependency('uuid', required: false) # sm
-# dep_freetype2    = dependency('freetype2', version: '>= 2.1.6') # xft
-# dep_fontconfig   = dependency('fontconfig', version: '>= 2.5.92') # xft
-# dep_gettext      = dependency('gettext', required: false) # xpm
-# # xserver
-# dep_null         = dependency('', required: false)
-# dep_xshmfence    = dependency('xshmfence', version: '>= 1.1', required: false)
-# dep_pixman       = dependency('pixman-1')
-# dep_libbsd       = dependency('libbsd-overlay', required: false)
-# dep_xkbcomp      = dependency('xkbcomp', required: false)
-# dep_dbus         = dependency('dbus-1', version: '>= 1.0', required: get_option('systemd_logind') == 'true')
-# dep_fontutil     = dependency('fontutil', required: false)
-# dep_drm          = dependency('libdrm', version: '>= 2.4.116')
+# py = find_program('python3', required: true)
+pymod = import('python')
+python = pymod.find_installation('python3', required : true, modules : ['jinja2'])
+python_39 = python.language_version().version_compare('>=3.9')
+
+dep_xproto = dependency('xproto')
+dep_xau    = dependency('xau')
+dep_xdmcp  = dependency('xdmcp')
+
 
 python = import('python').find_installation()
 pkg    = import('pkgconfig')
@@ -66,9 +51,8 @@ subdir('utils')
 # endif
 
 fs = import('fs')
-FIRST_RUN = not fs.is_dir(dir_build / 'src')
+FIRST_RUN = not fs.is_dir(dir_build / 'lib')
 
-# speed up when run meson reconfigure
 if FIRST_RUN
   f_unique = []
   foreach f: f_check

@@ -1,17 +1,15 @@
 inc_xcb += include_directories('.')
 
-f_check += []
-h_check += []
-
-dep_int_keysyms = [xcb]
+dep_ext_keysyms = dep_xproto
 
 src = files(
+  'keysyms.c',
 )
 
-lib = library('xcb-keysyms', src,
+lib = library('xcb-util-keysyms', src,
   include_directories: inc_xcb,
-  dependencies: dep_int_keysyms,
-  version: '0.0.0',
+  dependencies: dep_ext_keysyms,
+  version: '1.0.0',
   install: true,
 )
 
@@ -21,8 +19,8 @@ keysyms = declare_dependency(
 )
 
 pkg.generate(lib,
-  name: '',
-  description: '',
-  version: '',
+  name: 'XCB Keysyms library',
+  description: 'XCB Keysyms',
+  version: '0.4.1',
   requires: 'xcb',
 )

@@ -1,16 +1,17 @@
 inc_xcb += include_directories('.')
 
-f_check += []
-h_check += []
+h_check += ['sys/shm.h']
 
-dep_int_image = [xcb]
+dep_ext_image = dep_xproto
+dep_int_image = [xcb, shm, util]
 
 src = files(
+  'xcb_image.c',
 )
 
-lib = library('xcb-image', src,
+lib = library('xcb-util-image', src,
   include_directories: inc_xcb,
-  dependencies: dep_int_image,
+  dependencies: [dep_int_image, dep_ext_image],
   version: '0.0.0',
   install: true,
 )
@@ -21,8 +22,8 @@ image = declare_dependency(
 )
 
 pkg.generate(lib,
-  name: '',
-  description: '',
-  version: '',
-  requires: 'xcb',
+  name: 'XCB Image library',
+  description: 'XCB image convenience library',
+  version: '0.4.1',
+  requires: ['xcb', 'xcb-shm'],
 )

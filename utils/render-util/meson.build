@@ -1,14 +1,14 @@
 inc_xcb += include_directories('.')
 
-f_check += []
-h_check += []
-
-dep_int_renderutil = [xcb]
+dep_int_renderutil = render
 
 src = files(
+  'cache.c',
+  'util.c',
+  'glyph.c',
 )
 
-lib = library('xcb-renderutil', src,
+lib = library('xcb-util-renderutil', src,
   include_directories: inc_xcb,
   dependencies: dep_int_renderutil,
   version: '0.0.0',
@@ -21,8 +21,8 @@ renderutil = declare_dependency(
 )
 
 pkg.generate(lib,
-  name: '',
-  description: '',
-  version: '',
-  requires: 'xcb',
+  name: 'XCB RenderUtil library',
+  description: 'XCB RENDER-extension utilities library',
+  version: '0.3.10',
+  requires: ['xcb', 'xcb-render'],
 )

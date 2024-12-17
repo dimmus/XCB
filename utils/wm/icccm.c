@@ -37,7 +37,7 @@
 
 #include <xcb/xcb.h>
 
-#include "xcb_icccm.h"
+#include "xcb/xcb_icccm.h"
 
 xcb_get_property_cookie_t
 xcb_icccm_get_text_property(xcb_connection_t *c,
