@@ -1,6 +1,6 @@
 project('X C Binding', 'c', 
     license: 'MIT', 
-    version: '11.8.1',
+    version: '1.17.0',
     meson_version: '>=0.59.0',
 )
 
@@ -21,23 +21,19 @@ dir_man     = dir_prefix / get_option('mandir')
 dir_build   = meson.project_build_root()
 dir_source  = meson.project_source_root()
 
-# py = find_program('python3', required: true)
 pymod = import('python')
 python = pymod.find_installation('python3', required : true, modules : ['jinja2'])
 python_39 = python.language_version().version_compare('>=3.9')
+
+pkg    = import('pkgconfig')
 
 dep_xproto = dependency('xproto')
 dep_xau    = dependency('xau')
 dep_xdmcp  = dependency('xdmcp')
 
-
-python = import('python').find_installation()
-pkg    = import('pkgconfig')
-
 conf = configuration_data()
 
-inc_config = include_directories('.')
-inc_xcb    = []
+inc_xcb    = [include_directories('.')]
 
 f_check  = []
 h_check  = []
