@@ -1,53 +1,82 @@
 inc_xcb += include_directories('.')
 
-f_check += []
-h_check += []
+src = [
+  'xproto',
+  'bigreq',
+  'composite',
+  'damage',
+  'dbe',
+  'dpms',
+  'dri2',
+  'dri3',
+  'ge',
+  'glx',
+  'present',
+  'randr',
+  'record',
+  'render',
+  'res',
+  'screensaver',
+  'shape',
+  'shm',
+  'sync',
+  'xc_misc',
+  'xevie',
+  'xf86dri',
+  'xf86vidmode',
+  'xfixes',
+  'xinerama',
+  'xinput',
+  'xkb',
+  'xprint',
+  'xselinux',
+  'xtest',
+  'xv',
+  'xvmc',
+]
 
-src = files(
-  'xproto.xml',
-  'bigreq.xml',
-  'composite.xml',
-  'damage.xml',
-  'dbe.xml',
-  'dpms.xml',
-  'dri2.xml',
-  'dri3.xml',
-  'ge.xml',
-  'glx.xml',
-  'present.xml',
-  'randr.xml',
-  'record.xml',
-  'render.xml',
-  'res.xml',
-  'screensaver.xml',
-  'shape.xml',
-  'shm.xml',
-  'sync.xml',
-  'xc_misc.xml',
-  'xevie.xml',
-  'xf86dri.xml',
-  'xf86vidmode.xml',
-  'xfixes.xml',
-  'xinerama.xml',
-  'xinput.xml',
-  'xkb.xml',
-  'xprint.xml',
-  'xselinux.xml',
-  'xtest.xml',
-  'xv.xml',
-  'xvmc.xml',
-)
+# C_CLIENT_PY_EXTRA_ARGS =
+# if XCB_SERVERSIDE_SUPPORT
+# C_CLIENT_PY_EXTRA_ARGS += --server-side
+# endif
 
-lib = library('xcb-proto', src,
-  include_directories: inc_xcb,
-  version: '0.0.0',
-  install: true,
-)
+# $(EXTSOURCES): c_client.py $(XCBPROTO_XCBINCLUDEDIR)/$(@:.c=.xml)
+# 	$(AM_V_GEN)$(PYTHON) $(srcdir)/c_client.py	-c "$(PACKAGE_STRING)" -l "$(XORG_MAN_PAGE)" \
+# 		-s "$(LIB_MAN_SUFFIX)" -p $(XCBPROTO_XCBPYTHONDIR) \
+# 		$(C_CLIENT_PY_EXTRA_ARGS) \
+# 		$(XCBPROTO_XCBINCLUDEDIR)/$(@:.c=.xml)
 
-xcbproto = declare_dependency(
-  link_with: lib,
-  include_directories: inc_xcb,
-)
+src_proto = []
+foreach proto : src
+  file = custom_target(
+    'generate_' + proto,
+    input: 'src' / proto + '.xml',
+    output: proto + '.c',
+    command: [
+      python, dir_source / 'proto' / 'xcbgen.py',
+      '-c', 'xcb-proto',
+      '-l', proto,
+      '-s', 'proto',
+      '-p', dir_build / 'proto',
+      '--server-side',
+      '@INPUT@',
+    ],
+    env: python_env,
+    build_by_default: true
+  )
+  src_proto += file
+endforeach
+
+# lib = library('xcb-proto', src_proto,
+#   include_directories: inc_xcb,
+#   version: '0.0.0',
+#   install: true,
+# )
+
+# xcbproto = declare_dependency(
+#   link_with: lib,
+#   include_directories: inc_xcb,
+# )
 
 pkg.generate(
   name: 'XCB Proto',

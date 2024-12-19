@@ -6,8 +6,8 @@ project('X C Binding', 'c',
 
 cc = meson.get_compiler('c')
 
-add_project_link_arguments(
-  '-no-undefined',
+add_project_arguments(
+  '-DHAVE_CONFIG_H',
   language: 'c'
 )
 
@@ -22,12 +22,16 @@ dir_build   = meson.project_build_root()
 dir_source  = meson.project_source_root()
 
 pymod = import('python')
-python = pymod.find_installation('python3', required : true, modules : ['jinja2'])
+# python = pymod.find_installation('python3', required : true, modules : ['jinja2'])
+python = pymod.find_installation('python3')
 python_39 = python.language_version().version_compare('>=3.9')
+# Environment for using the local xcbgen module
+python_env = {
+  'PYTHONPATH': dir_source / 'proto' / 'xcbgen'
+}
 
 pkg    = import('pkgconfig')
 
-dep_xproto = dependency('xproto')
 dep_xau    = dependency('xau')
 dep_xdmcp  = dependency('xdmcp')
 
@@ -39,9 +43,9 @@ f_check  = []
 h_check  = []
 
 subdir('include')
+# subdir('proto')
 subdir('lib')
-subdir('proto')
-subdir('utils')
+# subdir('utils')
 # if WITH_TESTS
 # subdir('test')
 # endif
@@ -54,9 +58,6 @@ if FIRST_RUN
   foreach f: f_check
     if not f_unique.contains(f)
       conf.set('HAVE_@0@'.format(f.to_upper()), cc.has_function(f))
-      if f == 'arc4random_buf'
-        h_check += ['sys/random.h']
-      endif
       f_unique += f
     endif
   endforeach
@@ -68,14 +69,6 @@ if FIRST_RUN
       h_unique += h
     endif
   endforeach
-
-  if not cc.has_function('strcasecmp')
-    if cc.has_function('_stricmp')
-      conf.set('strcasecmp', '_stricmp', description: 'Replacement for strcasecmp, if necessary')
-    else
-      error('strcasecmp (or _stricmp) is mandatory')
-    endif
-  endif
 endif
 
 # if WITH_DOC and WITH_MAN

@@ -1,11 +1,14 @@
-xcb_gen = find_program('xcbgen.py')
+src = files(
+    '__init__.py',
+    'error.py',
+    'expr.py',
+    'align.py',
+    'matcher.py',
+    'state.py',
+    'xtypes.py',
+)
 
-xcbgen_deps = [
-    meson.current_source_dir() / '__init__.py',
-    meson.current_source_dir() / 'error.py',
-    meson.current_source_dir() / 'expr.py',
-    meson.current_source_dir() / 'align.py',
-    meson.current_source_dir() / 'matcher.py',
-    meson.current_source_dir() / 'state.py',
-    meson.current_source_dir() / 'xtypes.py',
-]
+# Install xcbgen module globally
+install_data(src,
+    install_dir: python.get_path('purelib') / 'xcbgen'
+)

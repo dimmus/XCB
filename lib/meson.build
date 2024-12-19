@@ -7,9 +7,10 @@ conf.set('HAVE_SENDMSG', 1) # Define if your platform supports sendmsg
 conf.set('HAVE_ABSTRACT_SOCKETS', 1) # Define if your platform supports abstract sockets
 conf.set('XCB_QUEUE_BUFFER_SIZE', 16384) # Set the XCB buffer queue size (default is 16384)
 conf.set('XCB_SERVERSIDE_SUPPORT', 0) # Build with support for server-side usage of xcb. This is still EXPERIMENTAL! ABI/API may change! (default: no)
+conf.set('IOV_MAX', 16) # Define if not provided by <limits.h>
 
 dep_ext_xcb = [dep_xau, dep_xdmcp]
-dep_int_xcb = [xcbproto]
+dep_int_xcb = []
 
 BUILD_COMPOSITE   = get_option('composite')
 BUILD_DAMAGE      = get_option('damage') 
@@ -51,11 +52,13 @@ BUILD_GE          = get_option('ge')
 # 		$(C_CLIENT_PY_EXTRA_ARGS) \
 # 		$(XCBPROTO_XCBINCLUDEDIR)/$(@:.c=.xml)
 
+subdir('proto')
 subdir('src')
 
-lib = library('xcb', src,
+lib = library('xcb', 
+  [src, src_proto],
   include_directories: inc_xcb,
-  dependencies: dep_int_xcb,
+  dependencies: [dep_int_xcb, dep_ext_xcb],
   version: '2.0.1',
   install: true,
 )
@@ -64,8 +67,6 @@ xcb = declare_dependency(
   link_with: lib,
   include_directories: inc_xcb,
 )
-
-########################################### 
 
 pkg.generate(
   name: 'XCB',
@@ -124,16 +125,16 @@ pkg.generate(
 endif
 if BUILD_GLX
 pkg.generate(
-  name: '',
-  description: '',
+  name: 'XCB GLX',
+  description: 'XCB GLX Extension',
   version: '1.17.0',
   requires_private: 'xcb',
 )
 endif
 if BUILD_PRESENT
 pkg.generate(
-  name: 'XCB GLX',
-  description: 'XCB GLX Extension',
+  name: 'XCB Present',
+  description: 'XCB Present Extension',
   version: '1.17.0',
   requires_private: 'xcb',
 )
@@ -156,8 +157,8 @@ pkg.generate(
 endif
 if BUILD_RENDER
 pkg.generate(
-  name: '',
-  description: '',
+  name: 'XCB Render',
+  description: 'XCB Render Extension',
   version: '1.17.0',
   requires_private: 'xcb',
 )
