@@ -1,4 +1,6 @@
-<h1 align="center">The X protocol C-language Binding (XCB)</h1>
+<h1 align="center">The X protocol C-language Binding (XCB)<br/>
+<span style="font-size:0.4em;">(all-in-one package)</span>
+</h1>
 
 <img src="doc/neko.png" width=120 align="right"/>
 
