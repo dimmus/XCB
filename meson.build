@@ -24,11 +24,11 @@ dir_source  = meson.project_source_root()
 pymod = import('python')
 # python = pymod.find_installation('python3', required : true, modules : ['jinja2'])
 python = pymod.find_installation('python3')
-python_39 = python.language_version().version_compare('>=3.9')
+# python_39 = python.language_version().version_compare('>=3.9')
 # Environment for using the local xcbgen module
-python_env = {
-  'PYTHONPATH': dir_source / 'proto' / 'xcbgen'
-}
+# python_env = {
+#   'PYTHONPATH': dir_source / 'proto' / 'xcbgen'
+# }
 
 pkg    = import('pkgconfig')
 
@@ -43,7 +43,7 @@ f_check  = []
 h_check  = []
 
 subdir('include')
-# subdir('proto')
+# subdir('proto') # generation using regen.sh now, so unused
 subdir('lib')
 subdir('utils')
 # if WITH_TESTS
