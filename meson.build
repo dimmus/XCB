@@ -45,7 +45,7 @@ h_check  = []
 subdir('include')
 # subdir('proto')
 subdir('lib')
-# subdir('utils')
+subdir('utils')
 # if WITH_TESTS
 # subdir('test')
 # endif

@@ -1,5 +1,7 @@
 inc_xcb += include_directories('.')
 
+dep_int_util = [xcb]
+
 f_check += ['vasprintf']
 
 src = files(
@@ -10,6 +12,7 @@ src = files(
 
 lib = library('xcb-util', src,
   include_directories: inc_xcb,
+  dependencies: dep_int_util,
   version: '1.0.0',
   install: true,
 )

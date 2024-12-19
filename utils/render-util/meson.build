@@ -1,6 +1,6 @@
 inc_xcb += include_directories('.')
 
-dep_int_renderutil = render
+dep_int_renderutil = xcb
 
 src = files(
   'cache.c',

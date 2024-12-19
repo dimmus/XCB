@@ -2,8 +2,7 @@ inc_xcb += include_directories('.')
 
 h_check += ['sys/shm.h']
 
-dep_ext_image = dep_xproto
-dep_int_image = [xcb, shm, util]
+dep_int_image = [xcb, util]
 
 src = files(
   'xcb_image.c',
@@ -11,7 +10,7 @@ src = files(
 
 lib = library('xcb-util-image', src,
   include_directories: inc_xcb,
-  dependencies: [dep_int_image, dep_ext_image],
+  dependencies: dep_int_image,
   version: '0.0.0',
   install: true,
 )

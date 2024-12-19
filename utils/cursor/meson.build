@@ -5,7 +5,7 @@ h_check += ['endian.h', 'sys/endian.h', 'sys/byteorder.h', 'libkern/OSByteOrder.
 
 conf.set_quoted('XCURSORPATH', '~/.local/share/icons:~/.icons:@0@/icons:@0@/pixmaps'.format(dir_data))
 
-dep_int_cursor = [xcb, render, renderutil, image]
+dep_int_cursor = [xcb, renderutil, image]
 
 src = files(
   'cursor.c',
@@ -35,6 +35,8 @@ pkg.generate(lib,
 )
 
 gperf = find_program('gperf', required: false)
+
+# Run command: gperf --includes --struct-type --language=ANSI-C --switch=1 shape_to_id.gperf > shape_to_id.c
 
 # TODO: We cannot use --pic because then the gperf-generated code does not compile :-/
 # GPERFFLAGS = --includes --struct-type --language=ANSI-C --switch=1
